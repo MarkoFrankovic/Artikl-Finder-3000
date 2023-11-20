@@ -2,5 +2,5 @@ import aiohttp
 import asyncio
 
 def finder():
-    artikl = input("Koji artikl želite prodači?")
+    artikl = input("Koji artikl želite pronači?")
     
