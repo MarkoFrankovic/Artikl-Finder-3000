@@ -1,9 +1,13 @@
 import aiohttp
 import asyncio
 
+
+artikl = input("Koji artikl želite pronači?")
+
+
 def kolektor():
     pass
 
-def finder():
-    artikl = input("Koji artikl želite pronači?")
+def finder(artikl):
+    pass
 
