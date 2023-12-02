@@ -1,6 +1,7 @@
 import asyncio
 from bs4 import *
 import requests
+from fastapi import FastAPI
 
 def scraper():
 

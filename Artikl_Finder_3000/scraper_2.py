@@ -1,6 +1,7 @@
 import asyncio
 from bs4 import *
 import requests
+from fastapi import FastAPI
 
 def scraper():
 
@@ -10,18 +11,23 @@ def scraper():
     soup = BeautifulSoup(html, 'html.parser')
     title = []
     subtitle = []
+    full_name = title + subtitle
 
     for tag in soup.find_all("h4",{"class":"m-offer-tile__title"}):
         names = tag.text.strip()
-        print(names)
+        
+    title.append(names)
+    print(title)
 
     for tag in soup.find_all("h5",{"class":"m-offer-tile__subtitle"}):
         names = tag.text.strip()
-        print(names)
+    
+    subtitle.append(names)
+    print(subtitle)   
 
     for tag in soup.find_all("div",{"class":"a-pricetag__price"})[::2]:
         price = tag.text.strip()[:-2].strip()
-        #print(price)
+        print(price)
     
 
 scraper()
