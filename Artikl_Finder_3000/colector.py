@@ -18,7 +18,6 @@ Artikli = mydb["Artikli"]
 
 print(Artikli)
 
-
 @app.route('/api/artikli', methods=['POST'])
 def upis_u_bazu():
    data = request.get_json()
