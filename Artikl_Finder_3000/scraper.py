@@ -15,7 +15,7 @@ def Scraper():
     for tag in soup.find_all("div", {"data-ga-type": "productImpression"}):
         names = tag.attrs["data-ga-name"]
         price = tag.attrs["data-ga-price"][:-2]
-        data.append({"name": names, "price": price, "tittle": title})
+        data.append({"name": names, "price": price, "title": title})
 
     return data
 

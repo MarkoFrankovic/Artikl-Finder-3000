@@ -13,9 +13,10 @@ Artikli = mydb["Artikli"]
 #artikl = input("Koji artikl želite pronači?")
 
 def finder():
-    Svi_Artikli = Artikli.find_one()
-    print(Svi_Artikli)
-    return Svi_Artikli
+    option = { "_id": 1, "name": 1, "price": 1 , "tittle": 1}
+    for x in Artikli.find(option):
+        print(x)
+ 
 
 
 finder()

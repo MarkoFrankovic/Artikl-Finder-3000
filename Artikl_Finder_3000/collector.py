@@ -21,9 +21,8 @@ Artikli = mydb["Artikli"]
 def upis_u_bazu():
    response = requests.get(f"http://localhost:8000/podatci")
    rezultat = response.json()
-   #print(json_util.dumps(rezultat))
    mydict = rezultat
-   Artikli.insert_one(mydict)
+   Artikli.insert_many(mydict["Podatci"])
    return rezultat
 
 upis_u_bazu()
