@@ -18,4 +18,7 @@ def scraper():
         price = tag.text.strip()[:-9].strip()
         print(price)
 
-scraper()
+@app.get("/podatci")
+async def prikaz_podataka():
+    podatci = Scraper()
+    return {"Podatci": podatci}
