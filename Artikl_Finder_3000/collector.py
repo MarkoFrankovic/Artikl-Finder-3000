@@ -1,28 +1,22 @@
 from fastapi import FastAPI
-import asyncio
 import pymongo
-import requests
-import bson.json_util as json_util
-import os
-from bson.objectid import ObjectId
+import httpx
 
 app = FastAPI()
 
-#mongodb+srv://Marko:<password>@cluster0.byoifdj.mongodb.net/
-
-myclient = pymongo.MongoClient(
-    "mongodb+srv://Marko:marko39@cluster0.byoifdj.mongodb.net/")
-
-#izbor databaze
+myclient = pymongo.MongoClient("mongodb+srv://Marko:marko39@cluster0.byoifdj.mongodb.net/")
 mydb = myclient["Databaza"]
-
 Artikli = mydb["Artikli"]
 
-def upis_u_bazu():
-   response = requests.get(f"http://localhost:8000/podatci")
-   rezultat = response.json()
-   mydict = rezultat
-   Artikli.insert_many(mydict["Podatci"])
-   return rezultat
+@app.on_event("shutdown")
+def shutdown_event():
+    myclient.close()
 
-upis_u_bazu()
+@app.get("/upis")
+async def upis_u_bazu():
+    async with httpx.AsyncClient() as client:
+        response = await client.get("http://localhost:8000/podatci")
+        rezultat = response.json()
+        mydict = rezultat
+        Artikli.insert_many(mydict["Podatci"])
+        return rezultat
