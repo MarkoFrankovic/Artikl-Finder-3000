@@ -19,6 +19,10 @@ def finder():
     for x in Artikli.find({},{ "_id": 0, "name": 1, "price": 1 , "title": 1}):
         print(x)
 
+        a = x.get("name")
+
+    print(a)
+
     #print(Svi_Artikli)
     #return Svi_Artikli
     return x
