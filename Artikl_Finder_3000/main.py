@@ -10,26 +10,17 @@ myclient = pymongo.MongoClient(
 mydb = myclient["Databaza"]
 Artikli = mydb["Artikli"]
 
-#artikl = input("Koji artikl želite pronači?")
 
 def finder():
+
     #x = Artikli.find({ "name": ime_artikla },{ "_id": 1, "name": 1, "price": 1 , "tittle": 1})
-    #print(x)
-    #for x in Artikli.find({ "name": ime_artikla },{ "_id": 1, "name": 1, "price": 1 , "tittle": 1}):
-        #print(x)
-
-
-    for x in Artikli.find({ "_id": 1, "name": 1, "price": 1 , "tittle": 1}):
-        print(x)
-
     #ime_artikla = input("Upisite ime željenog artikla: ")
 
-    #y = print(x.get("name": ime_artikla))
+    for x in Artikli.find({},{ "_id": 0, "name": 1, "price": 1 , "title": 1}):
+        print(x)
+
+    #print(Svi_Artikli)
+    #return Svi_Artikli
+    return x
 
 finder()
-
-
-#Ispis svih artikala
-#option = { "_id": 1, "name": 1, "price": 1 , "tittle": 1}
-    #for x in Artikli.find(option):
-        #print(x)
