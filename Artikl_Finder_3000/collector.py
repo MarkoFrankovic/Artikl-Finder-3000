@@ -12,7 +12,6 @@ Artikli = mydb["Artikli"]
 def shutdown_event():
     myclient.close()
 
-@app.get("/upis")
 async def upis_u_bazu():
     async with httpx.AsyncClient() as client:
         response = await client.get("http://localhost:8000/podatci")
@@ -20,3 +19,5 @@ async def upis_u_bazu():
         mydict = rezultat
         Artikli.insert_many(mydict["Podatci"])
         return rezultat
+
+upis_u_bazu()
