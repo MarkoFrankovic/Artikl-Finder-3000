@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-def scraper():
+def Scraper():
 
     title = "Kaufland"
     url = "https://www.kaufland.hr/ponuda/ponuda-od-cetvrtka/ponuda-pregled.category=01_Meso__perad__kobasice.html"

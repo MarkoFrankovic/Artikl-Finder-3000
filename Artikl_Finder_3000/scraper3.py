@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-def scraper():
+def Scraper():
 
     title = "Tommy"
     url = "https://www.tommy.hr/akcije"
