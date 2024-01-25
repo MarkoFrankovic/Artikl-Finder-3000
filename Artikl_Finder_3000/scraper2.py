@@ -6,7 +6,7 @@ from fastapi import FastAPI
 app = FastAPI()
 
 def Scraper():
-    title = []
+    title = "Kaufland"
     subtitle = []
     price_list = []
 
@@ -14,25 +14,22 @@ def Scraper():
     html = requests.get(url).text
     soup = BeautifulSoup(html, 'html.parser')
 
+    title_data = soup.find("h1", {"class": "a-heading__title"})
+    if title_data:
+        title = title_data.text.strip()
+
     for tag in soup.find_all("h4", {"class": "m-offer-tile__title"}):
         names = tag.text.strip()
-        title.append(names)
-        #print(title)
-
-    for tag in soup.find_all("h5", {"class": "m-offer-tile__subtitle"}):
-        names = tag.text.strip()
         subtitle.append(names)
-        #print(subtitle)
 
     for tag in soup.find_all("div", {"class": "a-pricetag__price"})[::2]:
         price = tag.text.strip()[:-2].strip()
         price_list.append(price)
-        #print(price)
 
     # Combine title, subtitle, and price into a list of dictionaries
     combined_data = [
-        {"name": f"{t} - {s}", "price": p} 
-        for t, s, p in zip(title, subtitle, price_list)
+        {"name": f"{title} - {s}", "price": p, "title": title}
+        for s, p in zip(subtitle, price_list)
     ]
 
     return combined_data

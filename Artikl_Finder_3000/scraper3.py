@@ -17,9 +17,9 @@ def Scraper():
 
     for name_tag, price_tag in zip(name_tags, price_tags):
         name = name_tag.text.strip()
-        price = price_tag.text.strip()[:-9].strip()
+        price = price_tag.text.strip()[:-1].strip()
 
-        data.append({"name": name, "price": price})
+        data.append({"name": name, "price": price, "title": title})
         print(name, price)
 
     return data
