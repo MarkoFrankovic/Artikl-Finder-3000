@@ -1,5 +1,5 @@
-from fastapi import FastAPI
 import pymongo
+from fastapi import FastAPI
 import requests
 
 app = FastAPI()
@@ -23,11 +23,17 @@ def upis_u_bazu():
     for url in urls:
         combined_data.extend(fetch_podatci(url))
 
-    # Print the combined data
-    print(combined_data)
-
-    # Insert the combined data into the MongoDB collection
-    # Artikli.insert_many(combined_data)
+    try:
+        # Insert the combined data into the MongoDB collection
+        result = Artikli.insert_many(combined_data)
+        if result.inserted_ids:
+            print("Data successfully inserted into MongoDB.")
+        else:
+            print("No data inserted into MongoDB.")
+    except pymongo.errors.AutoReconnect as e:
+        print(f"Error inserting data into MongoDB: {e.details}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
 
     return combined_data
 
