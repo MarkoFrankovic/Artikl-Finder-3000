@@ -6,8 +6,11 @@ myclient = pymongo.MongoClient(
 mydb = myclient["Databaza"]
 Artikli = mydb["Artikli"]
 
-def convert_price_to_int(price_str):
-    return int(''.join(filter(str.isdigit, price_str)))
+def convert_price_to_float(price_str):
+    # Remove any non-digit characters from the price string and convert to float
+    price = float(''.join(filter(lambda x: x.isdigit() or x in {',', '.'}, price_str.replace(',', '.'))))
+    # Format the price with Euro symbol
+    return f"{price:.2f} €"
 
 def show_all_items(sort_option=None, sort_order=None):
     projection = {"_id": 0, "name": 1, "price": 1, "title": 1}
@@ -19,7 +22,7 @@ def show_all_items(sort_option=None, sort_order=None):
 
     print(f"All items:")
     for item in items:
-        item["price"] = convert_price_to_int(item["price"])
+        item["price"] = convert_price_to_float(item["price"])
         print(item)
 
 def show_items_in_title(title, sort_option=None, sort_order=None):
@@ -33,17 +36,30 @@ def show_items_in_title(title, sort_option=None, sort_order=None):
 
     print(f"All items in title '{title}':")
     for item in items:
-        item["price"] = convert_price_to_int(item["price"])
+        item["price"] = convert_price_to_float(item["price"])
         print(item)
+
+def search_specific_item(name):
+    projection = {"_id": 0, "name": 1, "price": 1, "title": 1}
+    query = {"name": {"$regex": f".*{name}.*", "$options": "i"}}
+    item = Artikli.find_one(query, projection)
+
+    if item:
+        item["price"] = convert_price_to_float(item["price"])
+        print(f"Specific item:")
+        print(item)
+    else:
+        print(f"No item found with the name '{name}'")
 
 def menu():
     while True:
         print("Choose an option:")
         print("1. Show all items")
         print("2. Show all items in a title")
-        print("3. End")
+        print("3. Search for a specific item")
+        print("4. End")
 
-        option = input("Enter your choice (1-3): ")
+        option = input("Enter your choice (1-4): ")
 
         if option == "1":
             sort_option = input("Do you want to sort by price or name? (price or name, or no): ").lower()
@@ -55,6 +71,9 @@ def menu():
             sort_order = input("Enter the sorting order (ASC or DESC), or press Enter to bypass: ").upper()
             show_items_in_title(title, sort_option, sort_order if sort_order else None)
         elif option == "3":
+            name = input("Enter the name of the item: ")
+            search_specific_item(name)
+        elif option == "4":
             print("Exiting the program.")
             break
         else:
