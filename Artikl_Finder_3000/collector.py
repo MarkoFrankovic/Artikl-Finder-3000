@@ -18,6 +18,10 @@ def upis_u_bazu():
     rezultat2 = response2.json()
     rezultat3 = response3.json()
 
+    print(rezultat)
+    print(rezultat2)
+    print(rezultat3)
+
     # Combine the JSON responses into one list
     combined_data = rezultat["Podatci"] + rezultat2["Podatci"] + rezultat3["Podatci"]
 
