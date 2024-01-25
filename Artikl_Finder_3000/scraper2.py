@@ -13,7 +13,7 @@ def Scraper():
     soup = BeautifulSoup(html, 'html.parser')
     title = []
     subtitle = []
-    full_name = title + subtitle
+    full_name = []
 
     for tag in soup.find_all("h4",{"class":"m-offer-tile__title"}):
         names = tag.text.strip()
@@ -30,6 +30,11 @@ def Scraper():
     for tag in soup.find_all("div",{"class":"a-pricetag__price"})[::2]:
         price = tag.text.strip()[:-2].strip()
         print(price)
+    
+
+
+
+
     
 @app.get("/podatci")
 async def prikaz_podataka():
