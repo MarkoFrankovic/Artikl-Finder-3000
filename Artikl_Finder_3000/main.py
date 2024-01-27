@@ -1,7 +1,6 @@
 import pymongo
 
-myclient = pymongo.MongoClient(
-    "mongodb+srv://Marko:marko39@cluster0.byoifdj.mongodb.net/")
+myclient = pymongo.MongoClient("mongodb+srv://Marko:marko39@cluster0.hyrj3lm.mongodb.net/")
 
 mydb = myclient["Databaza"]
 Artikli = mydb["Artikli"]
