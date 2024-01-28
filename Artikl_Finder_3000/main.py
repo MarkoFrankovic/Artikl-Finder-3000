@@ -67,9 +67,13 @@ def read_root():
     # Call the /upis_u_bazu endpoint and print the returned message
     response = requests.get("http://127.0.0.1:8003/upis_u_bazu")
     result = response.json()
-    poruka = "Dobrodošli u Menu servis. Za odabir opcija upišite endpoint /menu/ te broj opcije: 1. Prikaz svih artikala , 2. Prikaz artikala iz odabrane trgovine , 3. Prikaz artikla po nazivu , 4. Izlaz iz Menua"
     print(result["message"])
     return {"message": poruka}
+
+@app.get("/menu")
+def menu_poruka():
+    poruka = "Dobrodošli u Menu servis. Za odabir opcija upišite endpoint /menu/ te broj opcije: 1. Prikaz svih artikala, 2. Prikaz artikala iz odabrane trgovine, 3. Prikaz artikla po nazivu, 4. Izlaz iz Menua"
+    return poruka
 
 @app.get("/menu/{option}")
 def menu(option: int):
@@ -83,9 +87,9 @@ def menu(option: int):
         return search_specific_item(name)
     elif option == 4:
         # Redirect to the root endpoint when option 4 is selected
-        return RedirectResponse(url="/", status_code=303)
+        return RedirectResponse(url="/menu", status_code=303)
     else:
         return {"message": "Invalid option"}
 
 # To run the FastAPI app, use:
-# uvicorn your_file_name:app --reload
+# uvicorn main:app --reload
