@@ -1,6 +1,7 @@
 # Artikl Finder 3000
 Ime Studenta: Marko Franković
-Kolegij: Raspodijeljeni sustavi
+
+ Kolegij: Raspodijeljeni sustavi
 
 # Pokretanje
 Pokretanje:
@@ -14,7 +15,7 @@ Pokretanje:
         uvicorn collector:app --reload --port 8003
 
     Main:
-        uvicorn main:app --reload --port 8003
+        uvicorn main:app --reload --port 8004
 
 # Usage
 Kako bi program radio potrebno je prvo pokrenuti sve fileove. Nakon pokretanja fileova
@@ -25,4 +26,5 @@ iz željene trgovine, pretražiti željeni artikl u svim trgovinama te povratak 
 
 # Greške
 Internal Error Greška - nije resolvana - kod radi tj. upisuje podatke u databazu
+
 SSL Greška - Nije dodana IP Adressa za access Clusteru
