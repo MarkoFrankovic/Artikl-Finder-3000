@@ -1,6 +1,11 @@
 import pymongo
+from fastapi import FastAPI, Query
+from fastapi.responses import RedirectResponse
+import requests
 
-myclient = pymongo.MongoClient("mongodb+srv://Marko:marko39@cluster0.hyrj3lm.mongodb.net/")
+app = FastAPI()
+
+myclient = pymongo.MongoClient("mongodb+srv://Marko:marko39@cluster0.pmmumwr.mongodb.net/")
 
 mydb = myclient["Databaza"]
 Artikli = mydb["Artikli"]
@@ -11,7 +16,8 @@ def convert_price_to_float(price_str):
     # Format the price with Euro symbol
     return f"{price:.2f} €"
 
-def show_all_items(sort_option=None, sort_order=None):
+def show_all_items(sort_option: str = Query(None, description="Sort by price or name (price or name)"),
+                   sort_order: str = Query(None, description="Sorting order (ASC or DESC)")):
     projection = {"_id": 0, "name": 1, "price": 1, "title": 1}
     items = Artikli.find({}, projection)
 
@@ -19,12 +25,16 @@ def show_all_items(sort_option=None, sort_order=None):
         sort_key = "price" if sort_option == "price" else "name"
         items = items.sort([(sort_key, pymongo.ASCENDING if sort_order == "ASC" else pymongo.DESCENDING)])
 
-    print(f"All items:")
+    result = []
     for item in items:
         item["price"] = convert_price_to_float(item["price"])
-        print(item)
+        result.append(item)
 
-def show_items_in_title(title, sort_option=None, sort_order=None):
+    return {"message": "All items", "data": result}
+
+def show_items_in_title(title: str,
+                        sort_option: str = Query(None, description="Sort by price or name (price or name)"),
+                        sort_order: str = Query(None, description="Sorting order (ASC or DESC)")):
     projection = {"_id": 0, "name": 1, "price": 1, "title": 1}
     query = {"title": {"$regex": f".*{title}.*", "$options": "i"}}
     items = Artikli.find(query, projection)
@@ -33,50 +43,49 @@ def show_items_in_title(title, sort_option=None, sort_order=None):
         sort_key = "price" if sort_option == "price" else "name"
         items = items.sort([(sort_key, pymongo.ASCENDING if sort_order == "ASC" else pymongo.DESCENDING)])
 
-    print(f"All items in title '{title}':")
+    result = []
     for item in items:
         item["price"] = convert_price_to_float(item["price"])
-        print(item)
+        result.append(item)
 
-def search_specific_item(name):
+    return {"message": f"All items in title '{title}'", "data": result}
+
+def search_specific_item(name: str):
     projection = {"_id": 0, "name": 1, "price": 1, "title": 1}
     query = {"name": {"$regex": f".*{name}.*", "$options": "i"}}
     item = Artikli.find_one(query, projection)
 
     if item:
         item["price"] = convert_price_to_float(item["price"])
-        print(f"Specific item:")
-        print(item)
+        return {"message": "Specific item", "data": item}
     else:
-        print(f"No item found with the name '{name}'")
+        return {"message": f"No item found with the name '{name}'"}
 
-def menu():
-    while True:
-        print("Choose an option:")
-        print("1. Show all items")
-        print("2. Show all items in a title")
-        print("3. Search for a specific item")
-        print("4. End")
+# Trigger the upis_u_bazu logic when accessing the root endpoint
+@app.get("/")
+def read_root():
+    # Call the /upis_u_bazu endpoint and print the returned message
+    response = requests.get("http://127.0.0.1:8003/upis_u_bazu")
+    result = response.json()
+    poruka = "Dobrodošli u Menu servis. Za odabir opcija upišite endpoint /menu/ te broj opcije: 1. Prikaz svih artikala , 2. Prikaz artikala iz odabrane trgovine , 3. Prikaz artikla po nazivu , 4. Izlaz iz Menua"
+    print(result["message"])
+    return {"message": poruka}
 
-        option = input("Enter your choice (1-4): ")
+@app.get("/menu/{option}")
+def menu(option: int):
+    if option == 1:
+        return show_all_items()
+    elif option == 2:
+        title = input("Enter the title: ")
+        return show_items_in_title(title)
+    elif option == 3:
+        name = input("Enter the name of the item: ")
+        return search_specific_item(name)
+    elif option == 4:
+        # Redirect to the root endpoint when option 4 is selected
+        return RedirectResponse(url="/", status_code=303)
+    else:
+        return {"message": "Invalid option"}
 
-        if option == "1":
-            sort_option = input("Do you want to sort by price or name? (price or name, or no): ").lower()
-            sort_order = input("Enter the sorting order (ASC or DESC), or press Enter to bypass: ").upper()
-            show_all_items(sort_option, sort_order if sort_order else None)
-        elif option == "2":
-            title = input("Enter the title: ")
-            sort_option = input("Do you want to sort by price or name? (price or name, or no): ").lower()
-            sort_order = input("Enter the sorting order (ASC or DESC), or press Enter to bypass: ").upper()
-            show_items_in_title(title, sort_option, sort_order if sort_order else None)
-        elif option == "3":
-            name = input("Enter the name of the item: ")
-            search_specific_item(name)
-        elif option == "4":
-            print("Exiting the program.")
-            break
-        else:
-            print("Invalid option")
-
-# Example usage:
-menu()
+# To run the FastAPI app, use:
+# uvicorn your_file_name:app --reload
