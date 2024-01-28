@@ -64,15 +64,4 @@ async def prikaz_podataka():
     podatci = upis_u_bazu()
     return {"Provedba upisa": podatci}
 
-@app.get("/dohvati_podatke")
-async def fetch_data():
-    urls = [
-        "http://localhost:8000/podatci",
-        "http://localhost:8001/podatci",
-        "http://localhost:8002/podatci",
-    ]
-    podatci = []
-    for url in urls:
-        podatci.extend(fetch_podatci(url))
 
-    return {"Dohvaćeno": podatci}
